@@ -57,6 +57,32 @@ class GdTypeHintInspectionTest : BasePlatformTestCase() {
         myFixture.checkResult("var t := true")
     }
 
+    @Test
+    fun testTypeHintInferredQuickFixNanLiteral() {
+        myFixture.configureByText("test.gd", "<caret>var t = NAN")
+        myFixture.doHighlighting()
+        val actions = myFixture.availableIntentions
+        val filtered = actions.filter { it.text.contains("type") || it.text.contains(":=)") }
+        assertSize(2, filtered)
+        assertEquals("Specify variable type [float]", filtered[0].text)
+
+        myFixture.launchAction(filtered[0])
+        myFixture.checkResult("var t: float = NAN")
+    }
+
+    @Test
+    fun testTypeHintInferredQuickFixInfLiteral() {
+        myFixture.configureByText("test.gd", "<caret>var t = INF")
+        myFixture.doHighlighting()
+        val actions = myFixture.availableIntentions
+        val filtered = actions.filter { it.text.contains("type") || it.text.contains(":=)") }
+        assertSize(2, filtered)
+        assertEquals("Specify variable type [float]", filtered[0].text)
+
+        myFixture.launchAction(filtered[0])
+        myFixture.checkResult("var t: float = INF")
+    }
+
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/inspection").pathString
     }
