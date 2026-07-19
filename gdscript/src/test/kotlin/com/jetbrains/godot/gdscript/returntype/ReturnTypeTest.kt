@@ -28,6 +28,17 @@ class ReturnTypeTest : BasePlatformTestCase() {
         assertEquals("int", var2Declaration.returnType)
     }
 
+    fun testReturnTypesOfNanInfLiterals() {
+        val file = myFixture.configureByFile(getTestName(false) + ".gd")
+
+        val varDeclarations = file.children.filterIsInstance<GdClassVarDeclTl>()
+        val var1Declaration = varDeclarations.first { it.name == "var1" }
+        val var2Declaration = varDeclarations.first { it.name == "var2" }
+
+        assertEquals("float", var1Declaration.returnType)
+        assertEquals("float", var2Declaration.returnType)
+    }
+
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/returnType").pathString
     }
